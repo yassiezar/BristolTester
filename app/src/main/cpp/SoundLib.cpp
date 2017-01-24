@@ -72,13 +72,13 @@ namespace sound
         __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "Tonal sources deleted");
     }
 
-    void Sound::TonalSound::playTone(JNIEnv* env, jfloat pitch1, jfloat pitch2)
+    void Sound::TonalSound::playTone(JNIEnv* env, jint pitch1, jint pitch2)
     {
         __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "Starting obstacle sound");
         size_t bufferSize = SOUND_LEN * SAMPLE_RATE;
         short* samples = TonalSound::generateSoundWave(bufferSize, pitch1, pitch2);
 
-        alBufferData(tonBuf[0], AL_FORMAT_MONO16, samples, bufferSize, SAMPLE_RATE);
+        alBufferData(tonBuf[0], AL_FORMAT_MONO16, samples, bufferSize * 2, SAMPLE_RATE); // Multiply buffersize with 2 here to account for size of samples being multiplied with sizeof(short) = 2
 
         free(samples);
 
@@ -89,50 +89,26 @@ namespace sound
         alSourcei(tonSrc, AL_LOOPING, AL_FALSE);
 
         alSourcePlay(tonSrc);
-
-        /*
-         * 1. Generate buffers
-         * 2. Fill buffers
-         * 3. Que buffers
-         * 4 . Play source
-         */
-
-        /*size_t bufferSize =  SOUND_LEN * SAMPLE_RATE / NUM_BUFFERS;
-
-        for (int i = 0; i < NUM_BUFFERS; i ++)
-        {
-            short* samples = TonalSound::generateSoundWave(bufferSize, pitch1 + 512*i);
-            alBufferData(tonBuf[i], AL_FORMAT_MONO16, samples, bufferSize, SAMPLE_RATE);
-            free(samples);
-        }
-
-        alSourceQueueBuffers(tonSrc, NUM_BUFFERS, tonBuf);
-
-        alSourcei(tonSrc, AL_LOOPING, AL_FALSE);
-        alSourcef(tonSrc, AL_GAIN, 1.0);
-
-        alSourcePlay(tonSrc);
-        __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "Source playing");*/
     }
 
-    short* Sound::TonalSound::generateSoundWave(size_t bufferSize, jfloat pitch1, jfloat pitch2)
+    short* Sound::TonalSound::generateSoundWave(size_t bufferSize, jint pitch1, jint pitch2)
     {
         // Construct sound buffer
-        short *samples = (short*)malloc(bufferSize * sizeof(short) * 2;// + bufferSize * sizeof(short) * 0.25);
+        short *samples = (short*)malloc(bufferSize * sizeof(short));// + bufferSize * sizeof(short) * 0.25);
+        float phi;
 
-        // Create first sound wave
-        float phi = (2.f * float(M_PI) * pitch1) / SAMPLE_RATE;
-
-        for(int i = 0; i < bufferSize / 2; i ++)
+        for(int i = 0; i < bufferSize; i ++)
         {
-            samples[i] = 32760 * sin(phi * i);
-        }
+            if (i < bufferSize / 2)
+            {
+                phi = (2.f * float(M_PI) * pitch1) / SAMPLE_RATE;
+            }
 
-        // Add second wave
-        phi = (2.f * float(M_PI) * pitch2) / SAMPLE_RATE;
+            else
+            {
+                phi = (2.f * float(M_PI) * pitch2) / SAMPLE_RATE;
+            }
 
-        for(int i = bufferSize / 2; i < bufferSize; i ++)
-        {
             samples[i] = 32760 * sin(phi * i);
         }
 

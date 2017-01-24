@@ -19,7 +19,7 @@ JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_destroyA
     soundC.destroyAL();
 }
 
-JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_playTone(JNIEnv* env, jobject obj, jfloat pitch1, jfloat pitch2)
+JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_playTone(JNIEnv* env, jobject obj, jint pitch1, jint pitch2)
 {
     ton.playTone(env, pitch1, pitch2);
 }

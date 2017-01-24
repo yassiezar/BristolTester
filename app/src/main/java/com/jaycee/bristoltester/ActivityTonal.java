@@ -30,7 +30,7 @@ public class ActivityTonal extends Activity
                     // Set tonePitches variable
                     generatePitches();
 
-                    JNINativeInterface.playTone(2048, 1024);
+                    JNINativeInterface.playTone(2048, 512);
                 }
             }
         });
@@ -42,8 +42,8 @@ public class ActivityTonal extends Activity
             {
                 if(testStarted)
                 {
-                    //JNINativeInterface.stopTone();
-                    JNINativeInterface.playTone(2048, 1024);
+                    JNINativeInterface.stopTone();
+                    JNINativeInterface.playTone(2048, 512);
                 }
             }
         });

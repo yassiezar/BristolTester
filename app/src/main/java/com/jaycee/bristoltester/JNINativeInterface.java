@@ -14,7 +14,7 @@ public class JNINativeInterface
     public static native void initAL();
     public static native void destroyAL();
 
-    public static native void playTone(float pitch1, float pitch2);
+    public static native void playTone(int pitch1, int pitch2);
     public static native void stopTone();
 
     public static native boolean isPlaying();

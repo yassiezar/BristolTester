@@ -15,7 +15,7 @@ extern "C" {
 JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_initAL(JNIEnv* env, jobject obj);
 JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_destroyAL(JNIEnv* env, jobject obj);
 
-JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_playTone(JNIEnv* env, jobject obj, jfloat pitch1, jfloat pitch2);
+JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_playTone(JNIEnv* env, jobject obj, jint pitch1, jint pitch2);
 JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_stopTone(JNIEnv* env, jobject obj);
 
 JNIEXPORT bool JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_isPlaying(JNIEnv* env, jobject obj);
