@@ -2,7 +2,7 @@
 #define APP_SOUND_H_
 
 #define SOUNDLOG "AppSound.cpp"
-#define NUM_BUFFERS 2
+#define NUM_BUFFERS 1
 #define SOUND_LEN 1
 #define SAMPLE_RATE 44100
 
@@ -37,12 +37,12 @@ namespace sound
                     void initTonal();
                     void endTonal();
 
-                    void playTone(JNIEnv* env, jint pitch1, jint pitch2);
+                    void playTone(JNIEnv* env, jfloat pitch1, jfloat pitch2);
                     void stopTone(JNIEnv* env);
 
                     bool isPlaying(JNIEnv* env);
 
-                    short* generateSoundWave(size_t bufferSize, jint pitch1, jint pitch2);
+                    int* generateSoundWave(size_t bufferSize, jfloat pitch1, jfloat pitch2);
 
                 private:
                     ALuint tonBuf[NUM_BUFFERS];

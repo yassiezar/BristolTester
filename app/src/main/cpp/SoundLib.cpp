@@ -72,13 +72,16 @@ namespace sound
         __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "Tonal sources deleted");
     }
 
-    void Sound::TonalSound::playTone(JNIEnv* env, jint pitch1, jint pitch2)
+    void Sound::TonalSound::playTone(JNIEnv* env, jfloat pitch1, jfloat pitch2)
     {
+        // alDeleteBuffers(NUM_BUFFERS, tonBuf);
+        alGenBuffers(NUM_BUFFERS, tonBuf);
+
         __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "Starting obstacle sound");
         size_t bufferSize = SOUND_LEN * SAMPLE_RATE;
-        short* samples = TonalSound::generateSoundWave(bufferSize, pitch1, pitch2);
+        int* samples = TonalSound::generateSoundWave(bufferSize, pitch1, pitch2);
 
-        alBufferData(tonBuf[0], AL_FORMAT_MONO16, samples, bufferSize * 2, SAMPLE_RATE); // Multiply buffersize with 2 here to account for size of samples being multiplied with sizeof(short) = 2
+        alBufferData(tonBuf[0], AL_FORMAT_MONO16, samples, bufferSize * 4, SAMPLE_RATE); // Multiply buffersize with 2 here to account for size of samples being multiplied with sizeof(short) = 2
 
         free(samples);
 
@@ -91,10 +94,10 @@ namespace sound
         alSourcePlay(tonSrc);
     }
 
-    short* Sound::TonalSound::generateSoundWave(size_t bufferSize, jint pitch1, jint pitch2)
+    int* Sound::TonalSound::generateSoundWave(size_t bufferSize, jfloat pitch1, jfloat pitch2)
     {
         // Construct sound buffer
-        short *samples = (short*)malloc(bufferSize * sizeof(short));// + bufferSize * sizeof(short) * 0.25);
+        int *samples = (int*)malloc(bufferSize * sizeof(int));// + bufferSize * sizeof(short) * 0.25);
         float phi;
 
         for(int i = 0; i < bufferSize; i ++)

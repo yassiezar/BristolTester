@@ -18,11 +18,11 @@
             android:text="Low"
             android:id="@+id/button_tonal_low"/>
 
-        <Button
-            android:layout_width="150dp"
-            android:layout_height="60dp"
-            android:text="Repeat"
-            android:id="@+id/button_tonal_repeat"/>
+        <!--<Button-->
+            <!--android:layout_width="150dp"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:text="Repeat"-->
+            <!--android:id="@+id/button_tonal_repeat"/>-->
 
         <Button
             android:layout_width="150dp"
@@ -35,8 +35,8 @@
     <Button
         android:layout_width="150dp"
         android:layout_height="60dp"
-        android:text="Start"
-        android:id="@+id/button_tonal_start"
+        android:text="Play"
+        android:id="@+id/button_tonal_play"
         android:layout_gravity="center"/>
 
 </LinearLayout>

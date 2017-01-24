@@ -2,15 +2,22 @@ package com.jaycee.bristoltester;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+
+import java.util.Random;
 
 public class ActivityTonal extends Activity
 {
-    private boolean testStarted = false;
-    private boolean toneIsHigher = false;
+    private static final String TAG = ActivityTonal.class.getSimpleName();
 
-    private float tone1, tone2;
-    private float currentDifference = 512;
+    private Tone easySteps, hardSteps;
+
+    private int currentStreakEasy = 0, currentStreakHard = 0;
+
+    private boolean played = false;
+    private boolean toneIsHigher = false;
+    private boolean onHardStep = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -18,51 +25,140 @@ public class ActivityTonal extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tonal);
 
-        findViewById(R.id.button_tonal_start).setOnClickListener(new View.OnClickListener()
+        easySteps = new Tone(512f);
+        hardSteps = new Tone(2f);
+
+        findViewById(R.id.button_tonal_play).setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                if(!testStarted)
+                if(!played)
                 {
-                    testStarted = true;
+                    played = true;
 
-                    // Set tonePitches variable
-                    generatePitches();
+                    if(onHardStep)
+                    {
+                        Log.d(TAG, "Playing easy");
 
-                    JNINativeInterface.playTone(2048, 512);
+                        // Always start with easy steps
+                        float[] tones = easySteps.generateTones();
+
+                        JNINativeInterface.playTone(tones[0], tones[1]);
+                    }
+
+                    else
+                    {
+                        Log.d(TAG, "Playing hard");
+                        float[] tones = hardSteps.generateTones();
+
+                        JNINativeInterface.playTone(tones[0], tones[1]);
+                    }
                 }
             }
         });
 
-        findViewById(R.id.button_tonal_repeat).setOnClickListener(new View.OnClickListener()
+        findViewById(R.id.button_tonal_high).setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                if(testStarted)
+                if(played)
                 {
-                    JNINativeInterface.stopTone();
-                    JNINativeInterface.playTone(2048, 512);
+                    played = false;
+                    if(!onHardStep)
+                    {
+                        if (easySteps.getPitch1() < easySteps.getPitch2())
+                        {
+                            currentStreakEasy ++;
+                            if (currentStreakEasy <= 2)
+                            {
+                                easySteps.halfDifference();
+                                currentStreakEasy = 0;
+                            }
+                        }
+
+                        else
+                        {
+                            currentStreakEasy = 0;
+                            easySteps.doubleDifference();
+                        }
+                        onHardStep = true;
+                    }
+
+                    else
+                    {
+                        if (hardSteps.getPitch1() < hardSteps.getPitch2())
+                        {
+                            currentStreakHard ++;
+                            if (currentStreakHard <= 2)
+                            {
+                                hardSteps.halfDifference();
+                                currentStreakHard = 0;
+                            }
+                        }
+
+                        else
+                        {
+                            currentStreakHard = 0;
+                            hardSteps.doubleDifference();
+                        }
+                        onHardStep = false;
+                    }
                 }
             }
         });
-    }
 
-    public void generatePitches()
-    {
-        tone1 = 2048;
-        tone2 = tone1 + currentDifference;
-
-        if(tone1 - tone2 > 0)
+        findViewById(R.id.button_tonal_low).setOnClickListener(new View.OnClickListener()
         {
-            toneIsHigher = false;
-        }
+            @Override
+            public void onClick(View view)
+            {
+                if(played)
+                {
+                    played = false;
+                    if(!onHardStep)
+                    {
+                        if (easySteps.getPitch1() > easySteps.getPitch2())
+                        {
+                            currentStreakEasy ++;
+                            if (currentStreakEasy <= 2)
+                            {
+                                easySteps.halfDifference();
+                                currentStreakEasy = 0;
+                            }
+                        }
 
-        else
-        {
-            toneIsHigher = true;
-        }
+                        else
+                        {
+                            currentStreakEasy = 0;
+                            easySteps.doubleDifference();
+                        }
+                        onHardStep = true;
+                    }
+
+                    else
+                    {
+                        if (hardSteps.getPitch1() > hardSteps.getPitch2())
+                        {
+                            currentStreakHard ++;
+                            if (currentStreakHard <= 2)
+                            {
+                                hardSteps.halfDifference();
+                                currentStreakHard = 0;
+                            }
+                        }
+
+                        else
+                        {
+                            currentStreakHard = 0;
+                            hardSteps.doubleDifference();
+                        }
+                        onHardStep = false;
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -79,5 +175,61 @@ public class ActivityTonal extends Activity
         super.onPause();
 
         JNINativeInterface.destroyAL();
+    }
+}
+
+class Tone
+{
+    private float currentToneDiff;
+    private float pitch1, pitch2;
+
+    public Tone(float initToneDiff)
+    {
+        this.currentToneDiff = initToneDiff;
+    }
+
+    public float[] generateTones()
+    {
+        float[] pitches = new float[2];
+
+        Random randomNumberGenerator = new Random();
+        pitches[0] = randomNumberGenerator.nextInt((4048 - 128) + 1) + 128;
+
+        Random plusMinusGenerator = new Random();
+
+        if(plusMinusGenerator.nextBoolean()) // True is plus
+        {
+            pitches[1] = pitches[0] + currentToneDiff;
+        }
+
+        else
+        {
+            pitches[1] = pitches[0] - currentToneDiff;
+        }
+
+        pitch1 = pitches[0];
+        pitch2 = pitches[1];
+
+        return pitches;
+    }
+
+    public float getPitch1()
+    {
+        return this.pitch1;
+    }
+
+    public float getPitch2()
+    {
+        return this.pitch2;
+    }
+
+    public void halfDifference()
+    {
+        currentToneDiff /= 2;
+    }
+
+    public void doubleDifference()
+    {
+        currentToneDiff *= 2;
     }
 }
