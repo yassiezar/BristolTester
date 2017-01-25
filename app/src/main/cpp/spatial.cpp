@@ -11,7 +11,6 @@ JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_playTone
     spat.playToneSpatial(env, src, list);
 }
 
-
 #ifdef __cplusplus
 }
 #endif
