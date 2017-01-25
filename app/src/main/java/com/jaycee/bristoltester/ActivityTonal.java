@@ -12,11 +12,14 @@ public class ActivityTonal extends Activity
     private static final String TAG = ActivityTonal.class.getSimpleName();
 
     private Tone easySteps, hardSteps;
+    private ClassMetrics metrics = new ClassMetrics();
 
     private int currentStreakEasy = 0, currentStreakHard = 0;
 
     private boolean played = false;
     private boolean onHardStep = true;
+
+    private String userAnswer = "", correctAnswer = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -35,24 +38,31 @@ public class ActivityTonal extends Activity
                 if(!played)
                 {
                     played = true;
+                    float[] tones;
 
                     if(onHardStep)
                     {
                         Log.d(TAG, "Playing easy");
 
                         // Always start with easy steps
-                        float[] tones = easySteps.generateTones();
-
-                        JNINativeInterface.playToneTonal(tones[0], tones[1]);
+                        tones = easySteps.generateTones();
                     }
 
                     else
                     {
                         Log.d(TAG, "Playing hard");
-                        float[] tones = hardSteps.generateTones();
-
-                        JNINativeInterface.playToneTonal(tones[0], tones[1]);
+                        tones = hardSteps.generateTones();
                     }
+                    if(tones[0] > tones[1])
+                    {
+                        correctAnswer = "low";
+                    }
+                    else
+                    {
+                        correctAnswer = "high";
+                    }
+
+                    JNINativeInterface.playToneTonal(tones[0], tones[1]);
                 }
             }
         });
@@ -104,6 +114,8 @@ public class ActivityTonal extends Activity
                         }
                         onHardStep = false;
                     }
+                    userAnswer = "high";
+                    metrics.writeLine(userAnswer, correctAnswer);
                 }
             }
         });
@@ -155,6 +167,8 @@ public class ActivityTonal extends Activity
                         }
                         onHardStep = false;
                     }
+                    userAnswer = "low";
+                    metrics.writeLine(userAnswer, correctAnswer);
                 }
             }
         });

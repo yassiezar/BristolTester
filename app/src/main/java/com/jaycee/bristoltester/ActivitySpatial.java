@@ -33,7 +33,10 @@ public class ActivitySpatial extends Activity
     private float[] tangoPos = new float[3];
     private float pos = 0.f;
 
+    private String correctAnswer = "", userAnswer = "";
+
     private Waypoint easyStep, hardStep;
+    private ClassMetrics metrics = new ClassMetrics();
 
     private Tango tango;
     private TangoCameraIntrinsics tangoCameraIntrinsics;
@@ -86,6 +89,15 @@ public class ActivitySpatial extends Activity
                         float pos = easyStep.generatePos();
                         float[] src = {tangoPos[0] + pos, tangoPos[1], tangoPos[2]};
 
+                        if(pos > 0)
+                        {
+                            correctAnswer = "right";
+                        }
+                        else
+                        {
+                            correctAnswer = "left";
+                        }
+
                         JNINativeInterface.playToneSpatial(src, tangoPos);
                     }
                     else
@@ -93,7 +105,16 @@ public class ActivitySpatial extends Activity
                         Log.d(TAG, "Playing hard");
 
                         float pos = hardStep.generatePos();
-                        float[] src = {pos, 0.f, 0.f};
+                        float[] src = {tangoPos[0] + pos, tangoPos[1], tangoPos[2]};
+
+                        if(pos > 0)
+                        {
+                            correctAnswer = "right";
+                        }
+                        else
+                        {
+                            correctAnswer = "left";
+                        }
 
                         JNINativeInterface.playToneSpatial(src, tangoPos);
                     }
@@ -145,6 +166,8 @@ public class ActivitySpatial extends Activity
                         }
                         onHardStep = true;
                     }
+                    userAnswer = "right";
+                    metrics.writeLine(userAnswer, correctAnswer);
                 }
             }
         });
@@ -193,6 +216,8 @@ public class ActivitySpatial extends Activity
                         }
                         onHardStep = true;
                     }
+                    userAnswer = "left";
+                    metrics.writeLine(userAnswer, correctAnswer);
                 }
             }
         });
