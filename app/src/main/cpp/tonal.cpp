@@ -1,10 +1,23 @@
 #include <tonal.hpp>
 
+static sound::Sound soundC;
 static sound::Sound::TonalSound ton;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_initALTonal(JNIEnv* env, jobject obj)
+{
+    soundC.initAL();
+    ton.initTonal();
+}
+
+JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_destroyALTonal(JNIEnv* env, jobject obj)
+{
+    ton.endTonal();
+    soundC.destroyAL();
+}
 
 JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_playToneTonal(JNIEnv* env, jobject obj, jfloat pitch1, jfloat pitch2)
 {

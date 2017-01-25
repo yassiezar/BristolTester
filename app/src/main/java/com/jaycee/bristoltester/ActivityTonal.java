@@ -165,7 +165,7 @@ public class ActivityTonal extends Activity
     {
         super.onResume();
 
-        JNINativeInterface.initAL();
+        JNINativeInterface.initALTonal();
     }
 
     @Override
@@ -173,7 +173,7 @@ public class ActivityTonal extends Activity
     {
         super.onPause();
 
-        JNINativeInterface.destroyAL();
+        JNINativeInterface.destroyALTonal();
     }
 }
 

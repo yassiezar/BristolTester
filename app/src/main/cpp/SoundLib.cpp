@@ -75,7 +75,6 @@ namespace sound
 
     void Sound::TonalSound::playToneTonal(JNIEnv* env, jfloat pitch1, jfloat pitch2)
     {
-        // alDeleteBuffers(NUM_BUFFERS, tonBuf);
         alGenBuffers(1, &tonBuf);
 
         __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "Starting obstacle sound");
@@ -139,6 +138,7 @@ namespace sound
         {
             return true;
         }
+        return false;
     }
 
     /* Spatial Test Section */
@@ -162,6 +162,8 @@ namespace sound
 
     void Sound::SpatialSound::playToneSpatial(JNIEnv *env, jfloatArray src, jfloatArray list)
     {
+        alGenBuffers(1, &spatBuf);
+
         /*
          * Set up sound source and buffer for 3D spatial tones
          */
@@ -209,7 +211,7 @@ namespace sound
         alBufferData(spatBuf, AL_FORMAT_MONO16, samples, bufferSize, SAMPLE_RATE);
         free(samples);
 
-        alSourceQueueBuffers(spatSrc, 1, &spatBuf);
+        alSourcei(spatSrc, AL_BUFFER, spatBuf);
         alSourcePlay(spatSrc);
         __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "Source playing");
     }

@@ -20,14 +20,6 @@ target_link_libraries( SoundLib
                        log
                        m )
 
-# Link SoundLib to Sound source
-add_library( sound
-             SHARED
-             src/main/cpp/sound.cpp )
-
-target_link_libraries( sound
-                       SoundLib )
-
 # Link SoundLib to Tonal source
 add_library( tonal
              SHARED
