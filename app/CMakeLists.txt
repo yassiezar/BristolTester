@@ -19,10 +19,27 @@ target_link_libraries( SoundLib
                        openal
                        log
                        m )
+
+# Link SoundLib to Sound source
+add_library( sound
+             SHARED
+             src/main/cpp/sound.cpp )
+
+target_link_libraries( sound
+                       SoundLib )
+
 # Link SoundLib to Tonal source
 add_library( tonal
              SHARED
              src/main/cpp/tonal.cpp )
 
 target_link_libraries( tonal
+                       SoundLib )
+
+# Link SoundLib to Spatial source
+add_library( spatial
+             SHARED
+             src/main/cpp/spatial.cpp )
+
+target_link_libraries( spatial
                        SoundLib )

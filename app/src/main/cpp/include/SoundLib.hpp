@@ -37,16 +37,37 @@ namespace sound
                     void initTonal();
                     void endTonal();
 
-                    void playTone(JNIEnv* env, jfloat pitch1, jfloat pitch2);
-                    void stopTone(JNIEnv* env);
+                    void playToneTonal(JNIEnv* env, jfloat pitch1, jfloat pitch2);
+                    void stopToneTonal(JNIEnv* env);
 
-                    bool isPlaying(JNIEnv* env);
+                    bool isPlayingTonal(JNIEnv* env);
 
-                    int* generateSoundWave(size_t bufferSize, jfloat pitch1, jfloat pitch2);
+                    int* generateSoundWaveTonal(size_t bufferSize, jfloat pitch1, jfloat pitch2);
 
                 private:
-                    ALuint tonBuf[NUM_BUFFERS];
+                    ALuint tonBuf;
                     ALuint tonSrc;
+            };
+
+            class SpatialSound
+            {
+                public:
+                    SpatialSound();
+                    ~SpatialSound();
+
+                    void initSpatial();
+                    void endSpatial();
+
+                    void playToneSpatial(JNIEnv *env, jfloatArray src, jfloatArray list);
+                    void stopToneSpatial(JNIEnv* env);
+
+                    bool isPlayingSpatial(JNIEnv* env);
+
+                    int* generateSoundWaveSpatial(size_t bufferSize, jfloat pitch);
+
+                private:
+                    ALuint spatBuf;
+                    ALuint spatSrc;
             };
     };
 }

@@ -55,46 +55,47 @@ namespace sound
     }
 
     /* Tonal Sound Section */
+
     Sound::TonalSound::TonalSound() { }
     Sound::TonalSound::~TonalSound() { }
 
     void Sound::TonalSound::initTonal()
     {
-        alGenBuffers(NUM_BUFFERS, tonBuf);
+        alGenBuffers(1, &tonBuf);
         alGenSources(1, &tonSrc);
         __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "Tonal sources created");
     }
 
     void Sound::TonalSound::endTonal()
     {
-        alDeleteBuffers(NUM_BUFFERS, tonBuf);
+        alDeleteBuffers(1, &tonBuf);
         alDeleteSources(1, &tonSrc);
         __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "Tonal sources deleted");
     }
 
-    void Sound::TonalSound::playTone(JNIEnv* env, jfloat pitch1, jfloat pitch2)
+    void Sound::TonalSound::playToneTonal(JNIEnv* env, jfloat pitch1, jfloat pitch2)
     {
         // alDeleteBuffers(NUM_BUFFERS, tonBuf);
-        alGenBuffers(NUM_BUFFERS, tonBuf);
+        alGenBuffers(1, &tonBuf);
 
         __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "Starting obstacle sound");
         size_t bufferSize = SOUND_LEN * SAMPLE_RATE;
-        int* samples = TonalSound::generateSoundWave(bufferSize, pitch1, pitch2);
+        int* samples = TonalSound::generateSoundWaveTonal(bufferSize, pitch1, pitch2);
 
-        alBufferData(tonBuf[0], AL_FORMAT_MONO16, samples, bufferSize * 4, SAMPLE_RATE); // Multiply buffersize with 2 here to account for size of samples being multiplied with sizeof(short) = 2
+        alBufferData(tonBuf, AL_FORMAT_MONO16, samples, bufferSize * 4, SAMPLE_RATE); // Multiply buffersize with 2 here to account for size of samples being multiplied with sizeof(short) = 2
 
         free(samples);
 
         // Set source volume
         alSourcef(tonSrc, AL_GAIN, 1.0);
 
-        alSourcei(tonSrc, AL_BUFFER, tonBuf[0]);
+        alSourcei(tonSrc, AL_BUFFER, tonBuf);
         alSourcei(tonSrc, AL_LOOPING, AL_FALSE);
 
         alSourcePlay(tonSrc);
     }
 
-    int* Sound::TonalSound::generateSoundWave(size_t bufferSize, jfloat pitch1, jfloat pitch2)
+    int* Sound::TonalSound::generateSoundWaveTonal(size_t bufferSize, jfloat pitch1, jfloat pitch2)
     {
         // Construct sound buffer
         int *samples = (int*)malloc(bufferSize * sizeof(int));// + bufferSize * sizeof(short) * 0.25);
@@ -118,7 +119,7 @@ namespace sound
         return samples;
     }
 
-    void Sound::TonalSound::stopTone(JNIEnv* env)
+    void Sound::TonalSound::stopToneTonal(JNIEnv* env)
     {
         ALint state;
         alGetSourcei(tonSrc, AL_SOURCE_STATE, &state);
@@ -130,7 +131,7 @@ namespace sound
         __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "Sound stopped");
     }
 
-    bool Sound::TonalSound::isPlaying(JNIEnv* env)
+    bool Sound::TonalSound::isPlayingTonal(JNIEnv* env)
     {
         ALint state;
 
@@ -139,4 +140,93 @@ namespace sound
             return true;
         }
     }
+
+    /* Spatial Test Section */
+
+    Sound::SpatialSound::SpatialSound() { }
+    Sound::SpatialSound::~SpatialSound() { }
+
+    void Sound::SpatialSound::initSpatial()
+    {
+        alGenBuffers(1, &spatBuf);
+        alGenSources(1, &spatSrc);
+        __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "Spatial sources created");
+    }
+
+    void Sound::SpatialSound::endSpatial()
+    {
+        alDeleteBuffers(1, &spatBuf);
+        alDeleteSources(1, &spatSrc);
+        __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "Spatial sources deleted");
+    }
+
+    void Sound::SpatialSound::playToneSpatial(JNIEnv *env, jfloatArray src, jfloatArray list)
+    {
+        /*
+         * Set up sound source and buffer for 3D spatial tones
+         */
+
+        jsize srcLen = env->GetArrayLength(src);
+        jsize listLen = env->GetArrayLength(list);
+
+        jfloat* lSrc = new float[srcLen];
+        jfloat* lList = new float[listLen];
+
+        env->GetFloatArrayRegion(src, 0, srcLen, lSrc);
+        env->GetFloatArrayRegion(list, 0, listLen, lList);
+
+        // Set source volume
+        alSourcef(spatSrc, AL_GAIN, 1.0);
+
+        // Check to see if target is centre of screen: fix for OpenAL not handling centre sounds properly
+        if(sqrt((lList[0] - lSrc[0]) * (lList[0] - lSrc[0])) < 0.1)
+        {
+            // Set listener position and orientation
+            alListener3f(AL_POSITION, 0.f, lList[1], lList[2]);
+        }
+        else
+        {
+            alListener3f(AL_POSITION, lList[0], lList[1], lList[2]);
+        }
+        alListener3f(AL_VELOCITY, 0.f, 0.f, 0.f);
+
+        /* TODO: Check orientation: left and right turn */
+        float orient[6] = { /*fwd:*/ 0.f, 0.f, -1.f, /*up:*/ 0.f, 1.f, 0.f};
+        alListenerfv(AL_ORIENTATION, orient);
+
+        // Set source position and orientation
+        // alSource3f(navSrc, AL_POSITION, lSrc[0], lSrc[1], lSrc[2]);
+        // alSource3f(navSrc, AL_POSITION, lSrc[0], lList[1], lList[2]);
+        alSource3f(spatSrc, AL_POSITION, lSrc[0], lList[1], lList[2]);
+        alSource3f(spatSrc, AL_VELOCITY, 0.f, 0.f, 0.f);
+
+        /*
+         * Generate and play the tone
+         */
+        size_t bufferSize =  SOUND_LEN * SAMPLE_RATE;
+
+        int* samples = SpatialSound::generateSoundWaveSpatial(bufferSize, 1024.f);
+        alBufferData(spatBuf, AL_FORMAT_MONO16, samples, bufferSize, SAMPLE_RATE);
+        free(samples);
+
+        alSourceQueueBuffers(spatSrc, 1, &spatBuf);
+        alSourcePlay(spatSrc);
+        __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "Source playing");
+    }
+
+    int* Sound::SpatialSound::generateSoundWaveSpatial(size_t bufferSize, jfloat pitch)
+    {
+        // Construct sound buffer
+        int *samples = (int*)malloc(bufferSize * sizeof(int));
+        float phi;
+
+        for(int i = 0; i < bufferSize; i ++)
+        {
+            phi = (2.f * float(M_PI) * pitch) / SAMPLE_RATE;
+            samples[i] = 32760 * sin(phi * i);
+        }
+
+        return samples;
+    }
+
 }

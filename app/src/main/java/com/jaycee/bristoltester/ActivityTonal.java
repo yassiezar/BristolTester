@@ -16,7 +16,6 @@ public class ActivityTonal extends Activity
     private int currentStreakEasy = 0, currentStreakHard = 0;
 
     private boolean played = false;
-    private boolean toneIsHigher = false;
     private boolean onHardStep = true;
 
     @Override
@@ -44,7 +43,7 @@ public class ActivityTonal extends Activity
                         // Always start with easy steps
                         float[] tones = easySteps.generateTones();
 
-                        JNINativeInterface.playTone(tones[0], tones[1]);
+                        JNINativeInterface.playToneTonal(tones[0], tones[1]);
                     }
 
                     else
@@ -52,7 +51,7 @@ public class ActivityTonal extends Activity
                         Log.d(TAG, "Playing hard");
                         float[] tones = hardSteps.generateTones();
 
-                        JNINativeInterface.playTone(tones[0], tones[1]);
+                        JNINativeInterface.playToneTonal(tones[0], tones[1]);
                     }
                 }
             }

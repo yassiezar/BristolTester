@@ -1,37 +1,24 @@
 #include <tonal.hpp>
 
-static sound::Sound soundC;
 static sound::Sound::TonalSound ton;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_initAL(JNIEnv* env, jobject obj)
+JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_playToneTonal(JNIEnv* env, jobject obj, jfloat pitch1, jfloat pitch2)
 {
-    soundC.initAL();
-    ton.initTonal();
+    ton.playToneTonal(env, pitch1, pitch2);
 }
 
-JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_destroyAL(JNIEnv* env, jobject obj)
+JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_stopToneTonal(JNIEnv* env, jobject obj)
 {
-    ton.endTonal();
-    soundC.destroyAL();
+    ton.stopToneTonal(env);
 }
 
-JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_playTone(JNIEnv* env, jobject obj, jfloat pitch1, jfloat pitch2)
+JNIEXPORT bool JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_isPlayingTonal(JNIEnv* env, jobject obj)
 {
-    ton.playTone(env, pitch1, pitch2);
-}
-
-JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_stopTone(JNIEnv* env, jobject obj)
-{
-    ton.stopTone(env);
-}
-
-JNIEXPORT bool JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_isPlaying(JNIEnv* env, jobject obj)
-{
-    return ton.isPlaying(env);
+    return ton.isPlayingTonal(env);
 }
 
 

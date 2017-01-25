@@ -3,7 +3,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
+    android:layout_marginTop="140dp"
     tools:context="com.jaycee.bristoltester.ActivitySpatial">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center">
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:text="Low"
+            android:id="@+id/button_spatial_left"/>
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:text="High"
+            android:id="@+id/button_spatial_right"/>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:text="Play"
+        android:id="@+id/button_spatial_play"
+        android:layout_gravity="center"/>
 </LinearLayout>
