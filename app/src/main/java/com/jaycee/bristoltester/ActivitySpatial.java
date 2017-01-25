@@ -18,14 +18,22 @@ import com.google.atap.tangoservice.TangoXyzIjData;
 import com.projecttango.tangosupport.TangoSupport;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ActivitySpatial extends Activity
 {
     private static final String TAG = ActivitySpatial.class.getSimpleName();
 
     private boolean tangoIsConnected = false;
+    private boolean played = false;
+    private boolean onHardStep = true;
+
+    private int easyStepStreak = 0, hardStepStreak = 0;
 
     private float[] tangoPos = new float[3];
+    private float pos = 0.f;
+
+    private Waypoint easyStep, hardStep;
 
     private Tango tango;
     private TangoCameraIntrinsics tangoCameraIntrinsics;
@@ -59,14 +67,133 @@ public class ActivitySpatial extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spatial);
 
+        easyStep = new Waypoint(2.f);
+        hardStep = new Waypoint(0.03125f);
+
         findViewById(R.id.button_spatial_play).setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                float[] src = {-1.f, 0.f, 0.f};
+                if(!played)
+                {
+                    played = true;
 
-                JNINativeInterface.playToneSpatial(src, tangoPos);
+                    if(onHardStep)
+                    {
+                        Log.d(TAG, "Playing easy");
+
+                        float pos = easyStep.generatePos();
+                        float[] src = {tangoPos[0] + pos, tangoPos[1], tangoPos[2]};
+
+                        JNINativeInterface.playToneSpatial(src, tangoPos);
+                    }
+                    else
+                    {
+                        Log.d(TAG, "Playing hard");
+
+                        float pos = hardStep.generatePos();
+                        float[] src = {pos, 0.f, 0.f};
+
+                        JNINativeInterface.playToneSpatial(src, tangoPos);
+                    }
+                }
+            }
+        });
+
+        findViewById(R.id.button_spatial_right).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                if(played)
+                {
+                    played = false;
+                    if(onHardStep)
+                    {
+                        if(pos > 0)
+                        {
+                            hardStepStreak ++;
+                            if(hardStepStreak >= 2)
+                            {
+                                hardStep.halfPos();
+                                hardStepStreak = 0;
+                            }
+                        }
+                        else
+                        {
+                            hardStep.doublePos();
+                            hardStepStreak = 0;
+                        }
+                        onHardStep = false;
+                    }
+                    else
+                    {
+                        if(pos > 0)
+                        {
+                            easyStepStreak ++;
+                            if(easyStepStreak >= 2)
+                            {
+                                easyStep.halfPos();
+                                easyStepStreak = 0;
+                            }
+                        }
+                        else
+                        {
+                            easyStep.doublePos();
+                            easyStepStreak = 0;
+                        }
+                        onHardStep = true;
+                    }
+                }
+            }
+        });
+
+        findViewById(R.id.button_spatial_left).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                if(played)
+                {
+                    played = false;
+                    if(onHardStep)
+                    {
+                        if(pos < 0)
+                        {
+                            hardStepStreak ++;
+                            if(hardStepStreak >= 2)
+                            {
+                                hardStep.halfPos();
+                                hardStepStreak = 0;
+                            }
+                        }
+                        else
+                        {
+                            hardStep.doublePos();
+                            hardStepStreak = 0;
+                        }
+                        onHardStep = false;
+                    }
+                    else
+                    {
+                        if(pos < 0)
+                        {
+                            easyStepStreak ++;
+                            if(easyStepStreak >= 2)
+                            {
+                                easyStep.halfPos();
+                                easyStepStreak = 0;
+                            }
+                        }
+                        else
+                        {
+                            easyStep.doublePos();
+                            easyStepStreak = 0;
+                        }
+                        onHardStep = true;
+                    }
+                }
             }
         });
     }
@@ -194,5 +321,48 @@ public class ActivitySpatial extends Activity
         config.putBoolean(TangoConfig.KEY_BOOLEAN_AUTORECOVERY, true);
 
         return config;
+    }
+}
+
+class Waypoint
+{
+    private float pos;
+
+    public Waypoint(float initPoint)
+    {
+        this.pos = initPoint;
+    }
+
+    public float generatePos()
+    {
+        Random plusMinusGenerator = new Random();
+
+        if(plusMinusGenerator.nextBoolean()) // True is plus
+        {
+            return pos;
+        }
+
+        else
+        {
+            return -pos;
+        }
+    }
+
+    public void halfPos()
+    {
+        pos /= 2;
+    }
+
+    public void doublePos()
+    {
+        if(pos < 2.f)
+        {
+            pos *= 2;
+        }
+    }
+
+    public float getPos()
+    {
+        return pos;
     }
 }

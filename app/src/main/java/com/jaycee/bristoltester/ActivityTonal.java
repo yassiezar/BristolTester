@@ -70,7 +70,7 @@ public class ActivityTonal extends Activity
                         if (easySteps.getPitch1() < easySteps.getPitch2())
                         {
                             currentStreakEasy ++;
-                            if (currentStreakEasy <= 2)
+                            if (currentStreakEasy >= 2)
                             {
                                 easySteps.halfDifference();
                                 currentStreakEasy = 0;
@@ -90,7 +90,7 @@ public class ActivityTonal extends Activity
                         if (hardSteps.getPitch1() < hardSteps.getPitch2())
                         {
                             currentStreakHard ++;
-                            if (currentStreakHard <= 2)
+                            if (currentStreakHard >= 2)
                             {
                                 hardSteps.halfDifference();
                                 currentStreakHard = 0;
