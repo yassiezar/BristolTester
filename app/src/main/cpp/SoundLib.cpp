@@ -231,4 +231,131 @@ namespace sound
         return samples;
     }
 
+    /*
+     * Tone Limit Section
+     */
+
+    void Sound::LimitSound::LimitSound() {}
+    void Sound::LimitSound::~LimitSound() {}
+
+    void Sound::LimitSound::initALLimit()
+    {
+        alGenBuffers(NUM_BUFFERS, limBuf);
+        alGenSources(1, &limSrc);
+        __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "Limit sources created");
+    }
+
+    void Sound::LimitSound::endALLimit()
+    {
+        alDeleteBuffers(NUM_BUFFERS, limBuf);
+        alDeleteSources(1, &limSrc);
+        __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "Limit sources deleted");
+    }
+
+    void Sound::LimitSound::playTone(JNIEnv *env, jfloat pitch)
+    {
+        // Set source volume
+        alSourcef(limSrc, AL_GAIN, 1.0);
+
+        if(!sourceIsPlayingLim())
+        {
+            startPlayLim(pitch);
+        }
+
+        else
+        {
+            updateSoundLim(pitch);
+        }
+    }
+
+    void Sound::LimitSound::startPlayLim(jfloat pitch)
+    {
+        /*
+         * 1. Generate buffers
+         * 2. Fill buffers
+         * 3. Que buffers
+         * 4 . Play source
+         */
+
+        size_t bufferSize =  SOUND_LEN_LIM * SAMPLE_RATE / NUM_BUFFERS;
+        for (int i = 0; i < NUM_BUFFERS; i ++)
+        {
+            int* samples = LimitSound::generateSoundWaveLim(bufferSize, pitch);
+            alBufferData(limBuf[i], AL_FORMAT_MONO16, samples, bufferSize, SAMPLE_RATE);
+            free(samples);
+        }
+
+        alSourceQueueBuffers(limSrc, NUM_BUFFERS, limBuf);
+        alSourcePlay(limSrc);
+        __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "Source playing");
+    }
+
+    void Sound::LimitSound::updateSoundLim(jfloat pitch)
+    {
+        /*
+         * 1. Check processed buffers
+         * 2. For each procesed buffer:
+         *    - Unque buffer
+         *    - Load new sound data into buffer
+         *    - Reque buffer
+         * 3. Ensure source is playing, restart if needed
+         */
+
+        ALuint buffer;
+        ALint processedBuffers;
+
+        alGetSourcei(limSrc, AL_BUFFERS_PROCESSED, &processedBuffers);
+
+        if(processedBuffers <= 0)
+        {
+            __android_log_print(ANDROID_LOG_INFO, SOUNDLOG, "No processed buffers to update");
+            return;
+        }
+
+        size_t bufferSize =  SOUND_LEN_LIM * SAMPLE_RATE / NUM_BUFFERS;
+
+        while(processedBuffers --)
+        {
+            alSourceUnqueueBuffers(limSrc, 1, &buffer);
+
+            int* samples = Sound::LimitSound::generateSoundWaveLim(bufferSize, pitch);
+            alBufferData(buffer, AL_FORMAT_MONO16, samples, bufferSize, SAMPLE_RATE);
+            free(samples);
+
+            alSourceQueueBuffers(limSrc, 1, &buffer);
+        }
+
+        if(!sourceIsPlayingLim())
+        {
+            alSourcePlay(limSrc);
+        }
+    }
+
+    int* Sound::LimitSound::generateSoundWaveLim(size_t bufferSize, jfloat pitch)
+    {
+        // Construct sound buffer
+        int *samples = (int*)malloc(bufferSize * sizeof(int));
+
+        float phi = (2.f * float(M_PI) * pitch) / SAMPLE_RATE;
+
+        for(int i = 0; i < bufferSize; i ++)
+        {
+            samples[i] = 32760 * sin(phi * i);
+        }
+
+        return samples;
+    }
+
+    bool Sound::LimitSound::sourceIsPlayingLim()
+    {
+        ALint state;
+
+        alGetSourcei(limSrc, AL_SOURCE_STATE, &state);
+
+        if(state == AL_PLAYING)
+        {
+            return true;
+        }
+        return false;
+    }
 }

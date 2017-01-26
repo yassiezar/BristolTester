@@ -20,6 +20,15 @@ target_link_libraries( SoundLib
                        log
                        m )
 
+
+# Link SoundLib to Limit source
+add_library( limit
+             SHARED
+             src/main/cpp/limit.cpp )
+
+target_link_libraries( limit
+                       SoundLib )
+
 # Link SoundLib to Tonal source
 add_library( tonal
              SHARED

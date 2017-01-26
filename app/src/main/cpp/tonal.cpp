@@ -34,7 +34,6 @@ JNIEXPORT bool JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_isPlayin
     return ton.isPlayingTonal(env);
 }
 
-
 #ifdef __cplusplus
 }
 #endif

@@ -28,5 +28,14 @@ public class ActivityMain extends Activity
                 startActivity(new Intent(ActivityMain.this, ActivitySpatial.class));
             }
         });
+
+        findViewById(R.id.button_limit).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                startActivity(new Intent(ActivityMain.this, ActivityToneLimit.class));
+            }
+        });
     }
 }

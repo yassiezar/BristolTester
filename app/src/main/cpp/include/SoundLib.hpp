@@ -2,8 +2,9 @@
 #define APP_SOUND_H_
 
 #define SOUNDLOG "AppSound.cpp"
-#define NUM_BUFFERS 1
+#define NUM_BUFFERS 4
 #define SOUND_LEN 1
+#define SOUND_LEN_LIM 0.5
 #define SAMPLE_RATE 44100
 
 #include <jni.h>
@@ -68,6 +69,27 @@ namespace sound
                 private:
                     ALuint spatBuf;
                     ALuint spatSrc;
+            };
+
+            class LimitSound
+            {
+                public:
+                    LimitSound();
+                    ~LimitSound();
+
+                    void initALLimit();
+                    void endALLimit();
+
+                    void playTone(JNIEnv* env, jfloat pitch);
+                    void startPlayLim(jfloat pitch);
+                    void updateSoundLim(jfloat pitch);
+                    int* generateSoundWaveLim(size_t bufferSize, jfloat pitch);
+
+                    bool sourceIsPlayingLim();
+
+            private:
+                ALuint limSrc;
+                ALuint limBuf[NUM_BUFFERS];
             };
     };
 }

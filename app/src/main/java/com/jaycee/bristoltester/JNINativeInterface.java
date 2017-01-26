@@ -11,6 +11,7 @@ public class JNINativeInterface
         System.loadLibrary("sound");
         System.loadLibrary("tonal");
         System.loadLibrary("spatial");
+        System.loadLibrary("limit");
     }
 
     public static native void initALTonal();
@@ -25,4 +26,9 @@ public class JNINativeInterface
     public static native void destroyALSpatial();
 
     public static native void playToneSpatial(float[] src, float[] list);
+
+    public static native void initALLimit();
+    public static native void destroyALLimit();
+
+    public static native void playToneLimit(float pitch);
 }
