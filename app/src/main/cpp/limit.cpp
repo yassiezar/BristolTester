@@ -8,21 +8,21 @@ extern "C" {
 #endif
 
 
-JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_initALLimit(JNIEnv* env, jobject obj)
+JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_initLimit(JNIEnv* env, jobject obj)
 {
     soundC.initAL();
-    lim.initALLimit();
+    lim.initLimit();
 }
 
-JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_destroyALLimit(JNIEnv* env, jobject obj)
+JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_destroyLimit(JNIEnv* env, jobject obj)
 {
-    lim.endALLimit();
+    lim.endLimit();
     soundC.destroyAL();
 }
 
-JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_playToneLimit(JNIEnv* env, jfloat pitch)
+JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_playToneLimit(JNIEnv* env, jobject obj, jfloat pitch)
 {
-    lim.playTone(env, pitch);
+    lim.playToneLimit(env, pitch);
 }
 
 #ifdef __cplusplus

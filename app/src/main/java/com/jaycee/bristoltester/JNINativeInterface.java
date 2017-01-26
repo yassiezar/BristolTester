@@ -27,8 +27,8 @@ public class JNINativeInterface
 
     public static native void playToneSpatial(float[] src, float[] list);
 
-    public static native void initALLimit();
-    public static native void destroyALLimit();
+    public static native void initLimit();
+    public static native void destroyLimit();
 
     public static native void playToneLimit(float pitch);
 }

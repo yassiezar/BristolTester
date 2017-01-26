@@ -12,10 +12,10 @@
 extern "C" {
 #endif
 
-JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_initALLimit(JNIEnv* env, jobject obj);
-JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_destroyALLimit(JNIEnv* env, jobject obj);
+JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_initLimit(JNIEnv* env, jobject obj);
+JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_destroyLimit(JNIEnv* env, jobject obj);
 
-JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_playToneLimit(JNIEnv* env, jfloat pitch);
+JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_playToneLimit(JNIEnv* env, jobject obj, jfloat pitch);
 
 #ifdef __cplusplus
 }

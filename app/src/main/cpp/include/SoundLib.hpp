@@ -77,19 +77,19 @@ namespace sound
                     LimitSound();
                     ~LimitSound();
 
-                    void initALLimit();
-                    void endALLimit();
+                    void initLimit();
+                    void endLimit();
 
-                    void playTone(JNIEnv* env, jfloat pitch);
-                    void startPlayLim(jfloat pitch);
-                    void updateSoundLim(jfloat pitch);
-                    int* generateSoundWaveLim(size_t bufferSize, jfloat pitch);
+                    void playToneLimit(JNIEnv* env, jfloat pitch);
+                    void startPlayLimit(jfloat pitch);
+                    void updateSoundLimit(jfloat pitch);
+                    int* generateSoundWaveLimit(size_t bufferSize, jfloat pitch);
 
-                    bool sourceIsPlayingLim();
+                    bool sourceIsPlayingLimit();
 
-            private:
-                ALuint limSrc;
-                ALuint limBuf[NUM_BUFFERS];
+                private:
+                    ALuint limSrc;
+                    ALuint limBuf[NUM_BUFFERS];
             };
     };
 }
