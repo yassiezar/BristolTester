@@ -3,7 +3,7 @@
 
 #define SOUNDLOG "AppSound.cpp"
 #define NUM_BUFFERS 4
-#define SOUND_LEN 1
+#define SOUND_LEN 1.1
 #define SOUND_LEN_LIM 0.5
 #define SAMPLE_RATE 44100
 

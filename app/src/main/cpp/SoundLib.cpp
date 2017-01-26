@@ -102,9 +102,14 @@ namespace sound
 
         for(int i = 0; i < bufferSize; i ++)
         {
-            if (i < bufferSize / 2)
+            if (i < bufferSize / 2 - 0.2 * SAMPLE_RATE)
             {
                 phi = (2.f * float(M_PI) * pitch1) / SAMPLE_RATE;
+            }
+
+            else if(i >= bufferSize / 2  - 0.2 * SAMPLE_RATE&& i < bufferSize / 2 + 0.2 * SAMPLE_RATE)
+            {
+                phi = 0.f;
             }
 
             else
