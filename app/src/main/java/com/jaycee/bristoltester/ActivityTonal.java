@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.Random;
 
@@ -15,6 +16,7 @@ public class ActivityTonal extends Activity
     private ClassMetrics metrics = new ClassMetrics();
 
     private int currentStreakEasy = 0, currentStreakHard = 0;
+    private int convergenceStreak = 0;
 
     private boolean played = false;
     private boolean onHardStep = true;
@@ -27,8 +29,8 @@ public class ActivityTonal extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tonal);
 
-        easySteps = new Tone(512f);
-        hardSteps = new Tone(2f);
+        easySteps = new Tone(512.f);
+        hardSteps = new Tone(2.f);
 
         findViewById(R.id.button_tonal_play).setOnClickListener(new View.OnClickListener()
         {
@@ -37,6 +39,22 @@ public class ActivityTonal extends Activity
             {
                 if(!played)
                 {
+                    if(hardSteps.getCurrentToneDiff() == easySteps.getCurrentToneDiff() ||
+                       hardSteps.getCurrentToneDiff() * hardSteps.getCurrentToneDiff() == easySteps.getCurrentToneDiff() ||
+                       Math.sqrt(hardSteps.getCurrentToneDiff()) == easySteps.getCurrentToneDiff())
+                    {
+                        convergenceStreak ++;
+                    }
+                    else
+                    {
+                        convergenceStreak = 0;
+                    }
+
+                    if(convergenceStreak >= 6)
+                    {
+                        Toast.makeText(ActivityTonal.this, "Convergence Achieved", Toast.LENGTH_LONG).show();
+                    }
+
                     played = true;
                     float[] tones;
 
@@ -224,6 +242,11 @@ class Tone
         pitch2 = pitches[1];
 
         return pitches;
+    }
+
+    public float getCurrentToneDiff()
+    {
+        return this.currentToneDiff;
     }
 
     public float getPitch1()

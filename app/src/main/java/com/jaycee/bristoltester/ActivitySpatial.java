@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.atap.tangoservice.Tango;
 import com.google.atap.tangoservice.TangoCameraIntrinsics;
@@ -29,6 +30,7 @@ public class ActivitySpatial extends Activity
     private boolean onHardStep = true;
 
     private int easyStepStreak = 0, hardStepStreak = 0;
+    private int convergenceStreak = 0;
 
     private float[] tangoPos = new float[3];
     private float pos = 0.f;
@@ -81,6 +83,20 @@ public class ActivitySpatial extends Activity
                 if(!played)
                 {
                     played = true;
+
+                    if(Math.abs(easyStep.getPos() - hardStep.getPos()) < 0.05)
+                    {
+                        convergenceStreak ++;
+                    }
+                    else
+                    {
+                        convergenceStreak = 0;
+                    }
+
+                    if(convergenceStreak >= 6)
+                    {
+                        Toast.makeText(ActivitySpatial.this, "Convergence Achieved", Toast.LENGTH_LONG).show();
+                    }
 
                     if(onHardStep)
                     {
