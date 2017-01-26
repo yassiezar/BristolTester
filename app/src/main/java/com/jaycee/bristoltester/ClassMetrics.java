@@ -10,10 +10,6 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.net.Socket;
 
-/**
- * Created by jaycee on 2017/01/25.
- */
-
 public class ClassMetrics
 {
     private static final String TAG = ClassMetrics.class.getSimpleName();
@@ -47,7 +43,7 @@ public class ClassMetrics
 
     private class WifiDataSend extends AsyncTask<String, Void, Void>
     {
-        private String serverAdress = "10.3.4.123";
+        private String serverAdress = "192.168.43.22";
         private int port = 6666;
 
         public WifiDataSend()
