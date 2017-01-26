@@ -12,8 +12,8 @@
 extern "C" {
 #endif
 
-JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_initALTonal(JNIEnv* env, jobject obj);
-JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_destroyALTonal(JNIEnv* env, jobject obj);
+JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_initTonal(JNIEnv* env, jobject obj);
+JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_destroyTonal(JNIEnv* env, jobject obj);
 
 JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_playToneTonal(JNIEnv* env, jobject obj, jfloat pitch1, jfloat pitch2);
 JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_stopToneTonal(JNIEnv* env, jobject obj);

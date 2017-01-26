@@ -41,6 +41,25 @@ public class ClassMetrics
         }
     }
 
+    public void writeLine(float[] data)
+    {
+        String csvString = "";
+
+        for(int i = 0; i < data.length; i ++)
+        {
+            csvString += String.valueOf(data[i]);
+            csvString += DELIMITER;
+        }
+
+        /* WRITE TO WIFI PORT */
+        if(dataStreamer == null || dataStreamer.getStatus() != AsyncTask.Status.RUNNING)
+        {
+            Log.d(TAG, "wifi transmitting");
+            dataStreamer = new WifiDataSend();
+            dataStreamer.execute(csvString);
+        }
+    }
+
     private class WifiDataSend extends AsyncTask<String, Void, Void>
     {
         private String serverAdress = "192.168.43.22";

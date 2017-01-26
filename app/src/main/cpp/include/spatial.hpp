@@ -12,8 +12,8 @@
 extern "C" {
 #endif
 
-JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_initALSpatial(JNIEnv* env, jobject obj);
-JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_destroyALSpatial(JNIEnv* env, jobject obj);
+JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_initSpatial(JNIEnv* env, jobject obj);
+JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_destroySpatial(JNIEnv* env, jobject obj);
 
 JNIEXPORT void JNICALL Java_com_jaycee_bristoltester_JNINativeInterface_playToneSpatial(JNIEnv* env, jobject obj, jfloatArray src, jfloatArray list);
 

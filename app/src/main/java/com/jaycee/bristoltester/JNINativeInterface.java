@@ -14,16 +14,16 @@ public class JNINativeInterface
         System.loadLibrary("limit");
     }
 
-    public static native void initALTonal();
-    public static native void destroyALTonal();
+    public static native void initTonal();
+    public static native void destroyTonal();
 
     public static native void playToneTonal(float pitch1, float pitch2);
     public static native void stopToneTonal();
 
     public static native boolean isPlayingTonal();
 
-    public static native void initALSpatial();
-    public static native void destroyALSpatial();
+    public static native void initSpatial();
+    public static native void destroySpatial();
 
     public static native void playToneSpatial(float[] src, float[] list);
 

@@ -228,7 +228,7 @@ public class ActivitySpatial extends Activity
     {
         super.onResume();
 
-        JNINativeInterface.initALSpatial();
+        JNINativeInterface.initSpatial();
 
         /*
         Initialize Tango Service as a normal Android Service, since we call
@@ -304,7 +304,7 @@ public class ActivitySpatial extends Activity
     @Override
     protected void onPause()
     {
-        JNINativeInterface.destroyALSpatial();
+        JNINativeInterface.destroySpatial();
 
         if(tangoIsConnected)
         {
