@@ -15,6 +15,11 @@ public class ClassMetrics
     private static final String TAG = ClassMetrics.class.getSimpleName();
     private static final String DELIMITER = ",";
 
+    private String userAnswer, correctAnswer, convergence;
+
+    private float[] pitches;
+    private float firstTone, secondTone, distance;
+
     private WifiDataSend dataStreamer;
 
     public ClassMetrics()
@@ -22,26 +27,90 @@ public class ClassMetrics
 
     }
 
-    public void writeLine(String userAnswer, String correctAnswer)
+    public void updateAnswer(String userAnswer, String correctAnswer)
+    {
+        this.userAnswer = userAnswer;
+        this.correctAnswer = correctAnswer;
+    }
+
+    public void updateFrequencies(float[] tones)
+    {
+        this.firstTone = tones[0];
+        this.secondTone = tones[1];
+    }
+
+    public void updateDistance(float distance)
+    {
+        this.distance = distance;
+    }
+
+    public void updatePitches(float[] pitches)
+    {
+        this.pitches = pitches;
+    }
+
+    public void writeConvergence()
+    {
+        startStream("\n");
+    }
+
+    public void writeLine(int test)
     {
         String csvString = "";
 
-        csvString += String.valueOf(correctAnswer);
-        csvString += DELIMITER;
+        /*
+        1 = Spatial
+        2 = Tone Sensitivity
+        3 = Tone Limit
+         */
+        switch(test)
+        {
+            case 1:
+                csvString += String.valueOf(this.correctAnswer);
+                csvString += DELIMITER;
 
-        csvString += String.valueOf(userAnswer);
-        csvString += DELIMITER;
+                csvString += String.valueOf(this.userAnswer);
+                csvString += DELIMITER;
 
+                csvString += String.valueOf(this.distance);
+                csvString += DELIMITER;
+
+            case 2:
+                csvString += String.valueOf(this.correctAnswer);
+                csvString += DELIMITER;
+
+                csvString += String.valueOf(this.userAnswer);
+                csvString += DELIMITER;
+
+                csvString += String.valueOf(this.firstTone);
+                csvString += DELIMITER;
+
+                csvString += String.valueOf(this.secondTone);
+                csvString += DELIMITER;
+                break;
+            case 3:
+                for(int i = 0; i < this.pitches.length; i ++)
+                {
+                    csvString += String.valueOf(this.pitches[i]);
+                    csvString += DELIMITER;
+                }
+        }
+
+        startStream(csvString);
+    }
+
+    public void startStream(String dataString)
+    {
         /* WRITE TO WIFI PORT */
         if(dataStreamer == null || dataStreamer.getStatus() != AsyncTask.Status.RUNNING)
         {
             Log.d(TAG, "wifi transmitting");
             dataStreamer = new WifiDataSend();
-            dataStreamer.execute(csvString);
+            dataStreamer.execute(dataString);
         }
     }
 
-    public void writeLine(float[] data)
+/*    public void writeLine(float[] data)
     {
         String csvString = "";
 
@@ -51,18 +120,12 @@ public class ClassMetrics
             csvString += DELIMITER;
         }
 
-        /* WRITE TO WIFI PORT */
-        if(dataStreamer == null || dataStreamer.getStatus() != AsyncTask.Status.RUNNING)
-        {
-            Log.d(TAG, "wifi transmitting");
-            dataStreamer = new WifiDataSend();
-            dataStreamer.execute(csvString);
-        }
-    }
+        startStream(csvString);
+    }*/
 
     private class WifiDataSend extends AsyncTask<String, Void, Void>
     {
-        private String serverAdress = "192.168.43.22";
+        private String serverAdress = "172.23.76.56";
         private int port = 6666;
 
         public WifiDataSend()

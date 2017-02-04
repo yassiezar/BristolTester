@@ -54,6 +54,4 @@ dependencies {
 
     compile(name: 'tango_java_lib', ext: 'jar')
     compile(name: 'tango_support_java_lib', ext: 'aar')
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
 }

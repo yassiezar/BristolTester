@@ -19,7 +19,8 @@ public class ActivityTonal extends Activity
     private int convergenceStreak = 0;
 
     private boolean played = false;
-    private boolean onHardStep = true;
+    private boolean onHardStep = false;
+    private boolean answerHigh = false;
 
     private String userAnswer = "", correctAnswer = "";
 
@@ -40,27 +41,31 @@ public class ActivityTonal extends Activity
                 if(!played)
                 {
                     if(hardSteps.getCurrentToneDiff() == easySteps.getCurrentToneDiff() ||
-                       hardSteps.getCurrentToneDiff() * hardSteps.getCurrentToneDiff() == easySteps.getCurrentToneDiff() ||
-                       Math.sqrt(hardSteps.getCurrentToneDiff()) == easySteps.getCurrentToneDiff())
+                       hardSteps.getCurrentToneDiff() * 2 == easySteps.getCurrentToneDiff() ||
+                       hardSteps.getCurrentToneDiff() / 2 == easySteps.getCurrentToneDiff())
                     {
                         convergenceStreak ++;
+                        Log.d(TAG, String.format("Streak: %d", convergenceStreak));
                     }
                     else
                     {
                         convergenceStreak = 0;
                     }
 
-                    if(convergenceStreak >= 6)
+                    if(convergenceStreak >= 4)
                     {
                         Toast.makeText(ActivityTonal.this, "Convergence Achieved", Toast.LENGTH_LONG).show();
+                        metrics.writeConvergence();
+                        finish();
+                        return;
                     }
 
                     played = true;
                     float[] tones;
 
-                    if(onHardStep)
+                    if(!onHardStep)
                     {
-                        Log.d(TAG, "Playing easy");
+                        Log.d(TAG, String.format("Playing easy: %f", easySteps.getCurrentToneDiff()));
 
                         // Always start with easy steps
                         tones = easySteps.generateTones();
@@ -68,18 +73,24 @@ public class ActivityTonal extends Activity
 
                     else
                     {
-                        Log.d(TAG, "Playing hard");
+                        Log.d(TAG, String.format("Playing hard: %f", hardSteps.getCurrentToneDiff()));
+
                         tones = hardSteps.generateTones();
                     }
                     if(tones[0] > tones[1])
                     {
                         correctAnswer = "low";
+                        answerHigh = false;
+                        Log.d(TAG, "Answer low");
                     }
                     else
                     {
                         correctAnswer = "high";
+                        answerHigh = true;
+                        Log.d(TAG, "Answer high");
                     }
 
+                    metrics.updateFrequencies(tones);
                     JNINativeInterface.playToneTonal(tones[0], tones[1]);
                 }
             }
@@ -95,12 +106,14 @@ public class ActivityTonal extends Activity
                     played = false;
                     if(!onHardStep)
                     {
-                        if (easySteps.getPitch1() < easySteps.getPitch2())
+                        // if (easySteps.getPitch1() < easySteps.getPitch2())
+                        if (answerHigh)
                         {
                             currentStreakEasy ++;
-                            if (currentStreakEasy >= 2)
+                            if (currentStreakEasy == 2)
                             {
                                 easySteps.halfDifference();
+                                // easySteps.doubleDifference();
                                 currentStreakEasy = 0;
                             }
                         }
@@ -109,18 +122,21 @@ public class ActivityTonal extends Activity
                         {
                             currentStreakEasy = 0;
                             easySteps.doubleDifference();
+                            // easySteps.halfDifference();
                         }
                         onHardStep = true;
                     }
 
                     else
                     {
-                        if (hardSteps.getPitch1() < hardSteps.getPitch2())
+                        // if (hardSteps.getPitch1() < hardSteps.getPitch2())
+                        if(answerHigh)
                         {
                             currentStreakHard ++;
-                            if (currentStreakHard >= 2)
+                            if (currentStreakHard == 2)
                             {
                                 hardSteps.halfDifference();
+                                // hardSteps.doubleDifference();
                                 currentStreakHard = 0;
                             }
                         }
@@ -133,7 +149,8 @@ public class ActivityTonal extends Activity
                         onHardStep = false;
                     }
                     userAnswer = "high";
-                    metrics.writeLine(userAnswer, correctAnswer);
+                    metrics.updateAnswer(userAnswer, correctAnswer);
+                    metrics.writeLine(2);
                 }
             }
         });
@@ -148,10 +165,11 @@ public class ActivityTonal extends Activity
                     played = false;
                     if(!onHardStep)
                     {
-                        if (easySteps.getPitch1() > easySteps.getPitch2())
+                        // if (easySteps.getPitch1() > easySteps.getPitch2())
+                        if(!answerHigh)
                         {
                             currentStreakEasy ++;
-                            if (currentStreakEasy <= 2)
+                            if (currentStreakEasy == 2)
                             {
                                 easySteps.halfDifference();
                                 currentStreakEasy = 0;
@@ -168,12 +186,14 @@ public class ActivityTonal extends Activity
 
                     else
                     {
-                        if (hardSteps.getPitch1() > hardSteps.getPitch2())
+                        // if (hardSteps.getPitch1() > hardSteps.getPitch2())
+                        if (!answerHigh)
                         {
                             currentStreakHard ++;
-                            if (currentStreakHard <= 2)
+                            if (currentStreakHard == 2)
                             {
-                                hardSteps.halfDifference();
+                                //hardSteps.halfDifference();
+                                hardSteps.doubleDifference();
                                 currentStreakHard = 0;
                             }
                         }
@@ -186,7 +206,9 @@ public class ActivityTonal extends Activity
                         onHardStep = false;
                     }
                     userAnswer = "low";
-                    metrics.writeLine(userAnswer, correctAnswer);
+
+                    metrics.updateAnswer(userAnswer, correctAnswer);
+                    metrics.writeLine(2);
                 }
             }
         });

@@ -8,7 +8,6 @@ public class JNINativeInterface
 {
     static
     {
-        System.loadLibrary("sound");
         System.loadLibrary("tonal");
         System.loadLibrary("spatial");
         System.loadLibrary("limit");

@@ -96,6 +96,9 @@ public class ActivitySpatial extends Activity
                     if(convergenceStreak >= 6)
                     {
                         Toast.makeText(ActivitySpatial.this, "Convergence Achieved", Toast.LENGTH_LONG).show();
+                        metrics.writeConvergence();
+                        finish();
+                        return;
                     }
 
                     if(onHardStep)
@@ -114,6 +117,7 @@ public class ActivitySpatial extends Activity
                             correctAnswer = "left";
                         }
 
+                        metrics.updateDistance(pos);
                         JNINativeInterface.playToneSpatial(src, tangoPos);
                     }
                     else
@@ -183,7 +187,9 @@ public class ActivitySpatial extends Activity
                         onHardStep = true;
                     }
                     userAnswer = "right";
-                    metrics.writeLine(userAnswer, correctAnswer);
+
+                    metrics.updateAnswer(userAnswer, correctAnswer);
+                    metrics.writeLine(1);
                 }
             }
         });
@@ -233,7 +239,9 @@ public class ActivitySpatial extends Activity
                         onHardStep = true;
                     }
                     userAnswer = "left";
-                    metrics.writeLine(userAnswer, correctAnswer);
+
+                    metrics.updateAnswer(userAnswer, correctAnswer);
+                    metrics.writeLine(1);
                 }
             }
         });

@@ -34,11 +34,21 @@ public class ActivityToneLimit extends Activity
             {
                 pitch += 20.f;
             }
-            else
+            else if(pitch > 0)
             {
                 pitch -= 20.f;
             }
-            soundHandler.postDelayed(soundRunnable, 50);
+
+            int delay = 0;
+            if(pitch > 512 || pitch < 10000)
+            {
+                delay = 50;
+            }
+            else
+            {
+                delay = 150;
+            }
+            soundHandler.postDelayed(soundRunnable, delay);
         }
     };
 
@@ -80,7 +90,8 @@ public class ActivityToneLimit extends Activity
                         pitch = 15000.f;
                     }
 
-                    metrics.writeLine(pitches);
+                    metrics.updatePitches(pitches);
+                    metrics.writeLine(3);
 
                     soundHandler.removeCallbacks(soundRunnable);
                     JNINativeInterface.destroyLimit();
