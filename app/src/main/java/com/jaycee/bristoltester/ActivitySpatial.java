@@ -136,6 +136,7 @@ public class ActivitySpatial extends Activity
                             correctAnswer = "left";
                         }
 
+                        metrics.updateDistance(pos);
                         JNINativeInterface.playToneSpatial(src, tangoPos);
                     }
                 }
@@ -404,7 +405,7 @@ class Waypoint
 
     public void doublePos()
     {
-        if(pos < 2.f)
+        if(pos < 4.f)
         {
             pos *= 2;
         }

@@ -246,11 +246,11 @@ class Tone
         float[] pitches = new float[2];
 
         Random randomNumberGenerator = new Random();
-        pitches[0] = randomNumberGenerator.nextInt((4048 - 128) + 1) + 128;
+        pitches[0] = randomNumberGenerator.nextInt((4048 - 128) + 1) + currentToneDiff;// 128;
 
         Random plusMinusGenerator = new Random();
 
-        if(plusMinusGenerator.nextBoolean()) // True is plus
+        if(plusMinusGenerator.nextBoolean())// || pitches[0] - currentToneDiff < 0.0) // True is plus
         {
             pitches[1] = pitches[0] + currentToneDiff;
         }
@@ -283,11 +283,18 @@ class Tone
 
     public void halfDifference()
     {
-        currentToneDiff /= 2;
+
+        if(currentToneDiff >= 1.f)
+        {
+            currentToneDiff /= 2;
+        }
     }
 
     public void doubleDifference()
     {
-        currentToneDiff *= 2;
+        if(currentToneDiff <= 8192)
+        {
+            currentToneDiff *= 2;
+        }
     }
 }

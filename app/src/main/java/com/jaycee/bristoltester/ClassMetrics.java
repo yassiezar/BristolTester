@@ -74,6 +74,7 @@ public class ClassMetrics
 
                 csvString += String.valueOf(this.distance);
                 csvString += DELIMITER;
+                break;
 
             case 2:
                 csvString += String.valueOf(this.correctAnswer);
@@ -94,6 +95,7 @@ public class ClassMetrics
                     csvString += String.valueOf(this.pitches[i]);
                     csvString += DELIMITER;
                 }
+                break;
         }
 
         startStream(csvString);
