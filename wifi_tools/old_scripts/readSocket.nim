@@ -1,6 +1,20 @@
-import net, json, system, times
+import net, json, system, times, posix
 
 const port: int = 6666
+
+var
+  is_running: bool = true
+  socket: Socket = newSocket()
+
+proc c_signal(sig: cint, handler: proc (a: cint) {.noconv.}) {.importc: "signal", header: "<signal.h>".}
+
+proc at_exit(sig: cint) {.noconv.} =
+  close(socket)
+  is_running = false
+  echo "Signal. Port closed."
+  quit()
+
+c_signal(SIGINT, at_exit)
 
 proc getFileName(): string = 
   
@@ -13,7 +27,6 @@ proc getFileName(): string =
 proc main() = 
 
   var 
-    socket: Socket = newSocket()
     clientSocket: Socket = newSocket()
 
     readLineSuccess: int = 0
@@ -26,7 +39,7 @@ proc main() =
   socket.bindAddr(Port(port))
   socket.listen()
 
-  while true:
+  while is_running:
     socket.acceptAddr(clientSocket, clientAddr)
     echo "Connected from ", clientAddr
 
