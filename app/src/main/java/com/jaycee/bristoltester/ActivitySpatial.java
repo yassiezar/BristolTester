@@ -275,7 +275,7 @@ public class ActivitySpatial extends Activity
                 // thread or in the UI thread.
                 synchronized (ActivitySpatial.this)
                 {
-                    TangoSupport.initialize();
+                    TangoSupport.initialize(tango);
                     TangoConfig config = setupTangoConfig(tango);
                     try
                     {
