@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.net.Socket;
 
-public class ClassMetrics
+class ClassMetrics
 {
     private static final String TAG = ClassMetrics.class.getSimpleName();
     private static final String DELIMITER = ",";
@@ -22,39 +22,39 @@ public class ClassMetrics
 
     private WifiDataSend dataStreamer;
 
-    public ClassMetrics()
+    ClassMetrics()
     {
 
     }
 
-    public void updateAnswer(String userAnswer, String correctAnswer)
+    void updateAnswer(String userAnswer, String correctAnswer)
     {
         this.userAnswer = userAnswer;
         this.correctAnswer = correctAnswer;
     }
 
-    public void updateFrequencies(float[] tones)
+    void updateFrequencies(float[] tones)
     {
         this.firstTone = tones[0];
         this.secondTone = tones[1];
     }
 
-    public void updateDistance(float distance)
+    void updateDistance(float distance)
     {
         this.distance = distance;
     }
 
-    public void updatePitches(float[] pitches)
+    void updatePitches(float[] pitches)
     {
         this.pitches = pitches;
     }
 
-    public void writeConvergence()
+    void writeConvergence()
     {
         startStream("\n");
     }
 
-    public void writeLine(int test)
+    void writeLine(int test)
     {
         String csvString = "";
 
@@ -101,7 +101,7 @@ public class ClassMetrics
         startStream(csvString);
     }
 
-    public void startStream(String dataString)
+    void startStream(String dataString)
     {
         /* WRITE TO WIFI PORT */
         if(dataStreamer == null || dataStreamer.getStatus() != AsyncTask.Status.RUNNING)
@@ -127,7 +127,8 @@ public class ClassMetrics
 
     private class WifiDataSend extends AsyncTask<String, Void, Void>
     {
-        private String serverAdress = "172.23.76.56";
+//        private String serverAdress = "172.23.76.56";
+        private String serverAdress = "10.42.0.1";
         private int port = 6666;
 
         public WifiDataSend()

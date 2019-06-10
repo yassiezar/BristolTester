@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 26
+    buildToolsVersion "28.0.3"
     defaultConfig {
         applicationId "com.jaycee.bristoltester"
         minSdkVersion 19
-        targetSdkVersion 24
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         externalNativeBuild {
@@ -35,9 +35,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     apply from: '../version.gradle'
-    compile "com.google.tango:sdk-base:${release_version}"
-    compile "com.google.tango:support-base:${release_version}"
+    implementation "com.google.tango:sdk-base:${release_version}"
+    implementation "com.google.tango:support-base:${release_version}"
 }
